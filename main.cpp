@@ -62,4 +62,19 @@ int main() {
     cout << left << setw(25) << "TOTAL:" << right << setw(14) << "$" << finalTotal << endl;
     cout << "==========================================" << endl;
 
+// --- 6. Inventory Audit Table (Part II) ---
+    cout << "\n\n==========================================================" << endl;
+    cout << "                  INVENTORY AUDIT TABLE                   " << endl;
+    cout << "==========================================================" << endl;
+    cout << left << setw(15) << "CODE" 
+         << setw(20) << "ITEM NAME" 
+         << setw(10) << "QTY" 
+         << right << setw(11) << "TOTAL ($)" << endl;
+    cout << "----------------------------------------------------------" << endl;
+    cout << left << setw(15) << itemCode 
+         << setw(20) << foodName 
+         << setw(10) << itemQuantity 
+         << right << setw(11) << finalTotal << endl;
+    cout << "==========================================================" << endl;
+
     return 0;
