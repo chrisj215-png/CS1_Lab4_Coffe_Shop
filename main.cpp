@@ -18,17 +18,78 @@ int main() {
     // --- 1. User Inputs ---
     cout << "=== COFFEE SHOP INPUT SYSTEM ===" << endl;
    
-    cout << "Enter item name: ";
-    getline(cin, foodName);
+    char choice;
+    string sizeChoice;
+    cout<<"Please select an item."<<endl;
 
-    cout << "Enter item code (single character): ";
-    cin >> itemCode;
+    cout << left << setw(10) <<"Item"<< setw(10) << "Small(s)" << setw(10)<< "Medium(m)"<< setw(10)<< "Large(l)"<< endl;
+    cout << left << setw(10) <<"A. Bread"<< setw(10) << "4" << setw(10)<< "6"<< setw(10)<< "10"<< endl;
+    cout << left << setw(10) <<"B. Apple"<< setw(10) << "2" << setw(10)<< "4"<< setw(10)<< "6"<< endl;
+    cout << left << setw(10) <<"C. Water"<< setw(10) << "1" << setw(10)<< "2.50"<< setw(10)<< "3.50"<< endl;
+    cout << left << setw(10) <<"D. Sprite"<< setw(10) << "1.50" << setw(10)<< "2.50"<< setw(10)<< "3.50"<< endl;
+    
+    cin >> choice;
+    if (choice == 'A'||'a'){
+        cout<< "What size do you want?"<< endl;
+        cin >> sizeChoice;
+        cout << "How many?"<<endl;
+        cin >> itemQuantity;
+        if (sizeChoice == "Small" || sizeChoice == "s"){
+            unitPrice = 4;
+        }
+        else if (sizeChoice == "Medium" || sizeChoice == "m"){
+            unitPrice = 6;
+        }
+        else if (sizeChoice == "Large" || sizeChoice == "l"){
+            unitPrice = 10;
+        }
+        
+    } else if (choice == 'B'||'b'){
+        cout<< "What size do you want?"<< endl;
+        cin >> sizeChoice;
+        cout << "How many?"<<endl;
+        cin >> itemQuantity;
+        if (sizeChoice == "Small" || sizeChoice == "s"){
+            unitPrice = 2;
+        }
+        else if (sizeChoice == "Medium" || sizeChoice == "m"){
+            unitPrice = 4;
+        }
+        else if (sizeChoice == "Large" || sizeChoice == "l"){
+            unitPrice = 6;
+        }
+    } else if (choice == 'C'||'c'){
+        cout<< "What size do you want?"<< endl;
+        cin >> sizeChoice;
+        cout << "How many?"<<endl;
+        cin >> itemQuantity;
+        if (sizeChoice == "Small" || sizeChoice == "s"){
+            unitPrice = 1;
+        }
+        else if (sizeChoice == "Medium" || sizeChoice == "m"){
+            unitPrice = 2.50;
+        }
+        else if (sizeChoice == "Large" || sizeChoice == "l"){
+            unitPrice = 3.50;
+        }
+    } else if (choice == 'D'||'d'){
+        cout<< "What size do you want?"<< endl;
+        cin >> sizeChoice;
+        cout << "How many?"<<endl;
+        cin >> itemQuantity;
+        if (sizeChoice == "Small" || sizeChoice == "s"){
+            unitPrice = 1.50;
+        }
+        else if (sizeChoice == "Medium" || sizeChoice == "m"){
+            unitPrice = 2.50;
+        }
+        else if (sizeChoice == "Large" || sizeChoice == "l"){
+            unitPrice = 3.50;
+        }
+    }
 
-    cout << "Enter quantity: ";
-    cin >> itemQuantity;
 
-    cout << "Enter unit price: $";
-    cin >> unitPrice;
+
 
     cout << "Is the customer a rewards member? (y/n): ";
     cin >> memberInput;
@@ -62,19 +123,5 @@ int main() {
     cout << left << setw(25) << "TOTAL:" << right << setw(14) << "$" << finalTotal << endl;
     cout << "==========================================" << endl;
 
-// --- 6. Inventory Audit Table (Part II) ---
-    cout << "\n\n==========================================================" << endl;
-    cout << "                  INVENTORY AUDIT TABLE                   " << endl;
-    cout << "==========================================================" << endl;
-    cout << left << setw(15) << "CODE" 
-         << setw(20) << "ITEM NAME" 
-         << setw(10) << "QTY" 
-         << right << setw(11) << "TOTAL ($)" << endl;
-    cout << "----------------------------------------------------------" << endl;
-    cout << left << setw(15) << itemCode 
-         << setw(20) << foodName 
-         << setw(10) << itemQuantity 
-         << right << setw(11) << finalTotal << endl;
-    cout << "==========================================================" << endl;
-
     return 0;
+}
