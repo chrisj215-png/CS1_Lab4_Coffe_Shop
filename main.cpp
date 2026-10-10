@@ -1,186 +1,262 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <sstream>
+#include <cctype>
 
 using namespace std;
 
 int main() {
-    // --- Variable Declarations ---
-    string foodName;
-    char itemCode;
-    int itemQuantity;
-    double unitPrice;
-    char memberInput;
-    bool isMember = false;
+    // Daily totals
+    double grandTotalSales = 0.0;
+    int totalCustomers = 0;
+    char anotherCustomer = 'Y';
 
-    const double TAX_RATEAR = 0.065; // 6.5% sales tax
-    const double TAX_RATEFC = 0.005; // 0.5% sales tax
-    const double TAX_RATECM = 0.02125; // 2.125% sales tax
+    const double TAX_RATE = 0.08;
 
-    // --- 1. User Inputs ---
-    cout << "=== COFFEE SHOP INPUT SYSTEM ===" << endl;
-   
+    // Outer loop: process multiple customers
+    while (toupper(anotherCustomer) == 'Y') {
 
-    char choice;
-    string sizeChoice;
-    cout<<"Please select an item."<<endl;
+        // Customer variables
+        string customerName;
+        char memberInput;
+        bool isMember = false;
 
-    cout << left << setw(10) <<"Item"<< setw(10) << "Small(s)" << setw(10)<< "Medium(m)"<< setw(10)<< "Large(l)"<< endl;
-    cout << setw(10) <<"A. Bread" << setw(11) << "$4.00" << setw(10)<< "$6.00"<< setw(10)<< "$10.00"<< endl;
-    cout << setw(10) <<"B. Apple" << setw(11) << "$2.00" << setw(10)<< "$4.00"<< setw(10)<< "$6.00"<< endl;
-    cout << setw(10) <<"C. Water"<< setw(11) << "$1.00" << setw(10)<< "$2.50"<< setw(10)<< "$3.50"<< endl;
-    cout << setw(10) <<"D. Sprite"<<  setw(11) << "$1.50" << setw(10)<< "$2.50"<< setw(10)<< "$3.50"<< endl;
-    
-    // choices
-    cin >> choice;
-    if (choice == 'A'||choice == 'a'){
-        cout<< "What size do you want?"<< endl;
-        cin >> sizeChoice;
-        cout << "How many?"<<endl;
-        cin >> itemQuantity;
-        if (sizeChoice == "Small" || sizeChoice == "s"){
-            unitPrice = 4;
+        cout << "\nEnter customer name: ";
+        getline(cin, customerName);
+
+        string receipt = "";
+        double subtotal = 0.0;
+        char choice;
+
+        // Menu loop for the current customer
+        do {
+            cout << "\n=== JAVA & BYTES COFFEE SHOP ===\n";
+
+            cout << left << setw(12) << "Item"
+                 << setw(12) << "Small (s)"
+                 << setw(12) << "Medium (m)"
+                 << setw(12) << "Large (l)" << endl;
+
+            cout << left << setw(12) << "A. Bread"
+                 << setw(12) << "4.00"
+                 << setw(12) << "6.00"
+                 << setw(12) << "10.00" << endl;
+
+            cout << left << setw(12) << "B. Apple"
+                 << setw(12) << "2.00"
+                 << setw(12) << "4.00"
+                 << setw(12) << "6.00" << endl;
+
+            cout << left << setw(12) << "C. Water"
+                 << setw(12) << "1.00"
+                 << setw(12) << "2.50"
+                 << setw(12) << "3.50" << endl;
+
+            cout << left << setw(12) << "D. Sprite"
+                 << setw(12) << "1.50"
+                 << setw(12) << "2.50"
+                 << setw(12) << "3.50" << endl;
+
+            cout << "E. Checkout\n";
+
+            cout << "Please select an item: ";
+            cin >> choice;
+            choice = toupper(choice);
+
+            // Validate menu choice
+            while (choice != 'A' && choice != 'B' &&
+                   choice != 'C' && choice != 'D' &&
+                   choice != 'E') {
+
+                cout << "Invalid choice. Enter A, B, C, D, or E: ";
+                cin >> choice;
+                choice = toupper(choice);
+            }
+
+            // Checkout ends the menu loop
+            if (choice == 'E') {
+                break;
+            }
+
+            string foodName;
+            char itemCode = choice;
+            char sizeChoice;
+            int itemQuantity = 0;
+            double unitPrice = 0.0;
+
+            // Identify the selected item
+            if (choice == 'A') {
+                foodName = "Bread";
+            }
+            else if (choice == 'B') {
+                foodName = "Apple";
+            }
+            else if (choice == 'C') {
+                foodName = "Water";
+            }
+            else if (choice == 'D') {
+                foodName = "Sprite";
+            }
+
+            // Get and validate size
+            cout << "What size do you want? (S/M/L): ";
+            cin >> sizeChoice;
+            sizeChoice = toupper(sizeChoice);
+
+            while (sizeChoice != 'S' &&
+                   sizeChoice != 'M' &&
+                   sizeChoice != 'L') {
+
+                cout << "Invalid size. Enter S, M, or L: ";
+                cin >> sizeChoice;
+                sizeChoice = toupper(sizeChoice);
+            }
+
+            // Determine price based on item and size
+            if (choice == 'A') {
+                if (sizeChoice == 'S') unitPrice = 4.00;
+                else if (sizeChoice == 'M') unitPrice = 6.00;
+                else unitPrice = 10.00;
+            }
+            else if (choice == 'B') {
+                if (sizeChoice == 'S') unitPrice = 2.00;
+                else if (sizeChoice == 'M') unitPrice = 4.00;
+                else unitPrice = 6.00;
+            }
+            else if (choice == 'C') {
+                if (sizeChoice == 'S') unitPrice = 1.00;
+                else if (sizeChoice == 'M') unitPrice = 2.50;
+                else unitPrice = 3.50;
+            }
+            else if (choice == 'D') {
+                if (sizeChoice == 'S') unitPrice = 1.50;
+                else if (sizeChoice == 'M') unitPrice = 2.50;
+                else unitPrice = 3.50;
+            }
+
+            // Get and validate quantity
+            cout << "How many? ";
+            cin >> itemQuantity;
+
+            while (cin.fail() || itemQuantity <= 0) {
+                cin.clear();
+                cin.ignore(10000, '\n');
+
+                cout << "Enter a valid quantity greater than zero: ";
+                cin >> itemQuantity;
+            }
+
+            // Calculate item total
+            double itemTotal = itemQuantity * unitPrice;
+            subtotal += itemTotal;
+
+            // String accumulator: format one receipt line
+            ostringstream line;
+            line << left << setw(12) << foodName
+                 << setw(8) << sizeChoice
+                 << "Qty: " << setw(4) << itemQuantity
+                 << "$" << fixed << setprecision(2)
+                 << itemTotal << "\n";
+
+            receipt += line.str();
+
+            cout << "\n" << itemQuantity << " " << foodName
+                 << "(s) added to your order.\n";
+
+            cout << fixed << setprecision(2);
+            cout << "Current subtotal: $" << subtotal << endl;
+
+        } while (true);
+
+        // Ask about rewards membership
+        cout << "\nIs the customer a rewards member? (y/n): ";
+        cin >> memberInput;
+
+        while (toupper(memberInput) != 'Y' &&
+               toupper(memberInput) != 'N') {
+            cout << "Please enter Y or N: ";
+            cin >> memberInput;
         }
-        else if (sizeChoice == "Medium" || sizeChoice == "m"){
-            unitPrice = 6;
+
+        if (toupper(memberInput) == 'Y') {
+            isMember = true;
         }
-        else if (sizeChoice == "Large" || sizeChoice == "l"){
-            unitPrice = 10;
-        } else {
-            cout << "Invalid Input, redo inputs" << endl;
-            return 0;
-        } 
-        
-    } else if (choice == 'B'||choice == 'b'){
-        cout<< "What size do you want?"<< endl;
-        cin >> sizeChoice;
-        cout << "How many?"<<endl;
-        cin >> itemQuantity;
-        if (sizeChoice == "Small" || sizeChoice == "s"){
-            unitPrice = 2;
+
+        // Calculate tax and final total
+        double taxAmount = subtotal * TAX_RATE;
+        double finalTotal = subtotal + taxAmount;
+
+        // Calculate loyalty points, rounding down
+        int loyaltyPoints = static_cast<int>(finalTotal / 3);
+
+        // Print receipt
+        cout << fixed << setprecision(2);
+
+        cout << "\n==========================================\n";
+        cout << "          JAVA & BYTES COFFEE SHOP\n";
+        cout << "==========================================\n";
+
+        cout << "Customer Name: " << customerName << "\n";
+        cout << "Member Status: " << (isMember ? "Yes" : "No") << "\n";
+
+        cout << "------------------------------------------\n";
+        cout << left << setw(12) << "Item"
+             << setw(8) << "Size"
+             << setw(10) << "Quantity"
+             << "Amount\n";
+
+        cout << "------------------------------------------\n";
+        cout << receipt;
+        cout << "------------------------------------------\n";
+
+        cout << left << setw(25) << "Subtotal:"
+             << right << "$" << subtotal << "\n";
+
+        cout << left << setw(25) << "Tax (8%):"
+             << right << "$" << taxAmount << "\n";
+
+        cout << left << setw(25) << "TOTAL:"
+             << right << "$" << finalTotal << "\n";
+
+        cout << "Loyalty Points: ";
+        for (int i = 0; i < loyaltyPoints; i++) {
+            cout << "*";
         }
-        else if (sizeChoice == "Medium" || sizeChoice == "m"){
-            unitPrice = 4;
+        cout << " (" << loyaltyPoints << " points)\n";
+
+        cout << "==========================================\n";
+
+        // Update daily totals
+        grandTotalSales += finalTotal;
+        totalCustomers++;
+
+        // Ask whether another customer needs service
+        cout << "\nIs there another customer? (Y/N): ";
+        cin >> anotherCustomer;
+
+        while (toupper(anotherCustomer) != 'Y' &&
+               toupper(anotherCustomer) != 'N') {
+            cout << "Please enter Y or N: ";
+            cin >> anotherCustomer;
         }
-        else if (sizeChoice == "Large" || sizeChoice == "l"){
-            unitPrice = 6;
-        } else {
-            cout << "Invalid Input, redo inputs" << endl;
-            return 0;
-        }
-    } else if (choice == 'C'||choice == 'c'){
-        cout<< "What size do you want?"<< endl;
-        cin >> sizeChoice;
-        cout << "How many?"<<endl;
-        cin >> itemQuantity;
-        if (sizeChoice == "Small" || sizeChoice == "s"){
-            unitPrice = 1;
-        }
-        else if (sizeChoice == "Medium" || sizeChoice == "m"){
-            unitPrice = 2.50;
-        }
-        else if (sizeChoice == "Large" || sizeChoice == "l"){
-            unitPrice = 3.50;
-        } else {
-            cout << "Invalid Input, redo inputs" << endl;
-            return 0;
-        }
-    } else if (choice == 'D'||choice == 'd'){
-        cout<< "What size do you want?"<< endl;
-        cin >> sizeChoice;
-        cout << "How many?"<<endl;
-        cin >> itemQuantity;
-        if (sizeChoice == "Small" || sizeChoice == "s"){
-            unitPrice = 1.50;
-        }
-        else if (sizeChoice == "Medium" || sizeChoice == "m"){
-            unitPrice = 2.50;
-        }
-        else if (sizeChoice == "Large" || sizeChoice == "l"){
-            unitPrice = 3.50;
-        }
-        else {
-            cout << "Invalid Input, redo inputs" << endl;
-            return 0;
-        }
-    } else {
-        cout << "Invalid Input, redo inputs" << endl;
-        return 0;
+
+        // Remove newline before the next customer's getline
+        cin.ignore(10000, '\n');
     }
 
-
-
-    isMember = false;
-    cout << "Is the customer a rewards member? (y/n): ";
-    cin >> memberInput;
-    if (memberInput == 'y' || memberInput == 'Y') {
-        isMember = true;
-    } else if (memberInput == 'n' || memberInput == 'N') {
-        isMember = false;
-    } else {
-        cout << "Invalid input, redo inputs" << endl;
-    }
- // Set fixed decimal formatting for currency
+    // End-of-day report
     cout << fixed << setprecision(2);
-    // --- 2. Basic Calculations ---
-    double subtotal = itemQuantity * unitPrice;
-    double taxAmountAR = subtotal * TAX_RATEAR;
-    double taxAmountFC = subtotal * TAX_RATEFC;
-    double taxAmountCM = subtotal * TAX_RATECM;
-    double totalTax  = taxAmountAR + taxAmountFC + taxAmountCM;
-    double tipInput = 0;
-    double tip = 0;
-    char tipChoice;
-    cout << setw(10) << left << "Tip Selection" <<right << setw(13) << "Amount" << endl;
-    cout << setw(10) << left << "A. 15%" <<right << setw(10) << "$" << subtotal * 0.15 << endl;
-    cout << setw(10) << left << "B. 20%" <<right << setw(10) << "$" << subtotal * 0.2 << endl;
-    cout << setw(10) << left << "C. 25%" <<right << setw(10) << "$" << subtotal * 0.25 << endl;
-    cout << setw(10) << left << "D. Other Amount" <<right << setw(10) << endl;
-    cin >> tipChoice; 
 
-    // Tips 
-    if (tipChoice == 'A' || tipChoice == 'a'){
-        cout << "Thank you for tipping 15%" << endl;
-        tip = 0.15*subtotal;
-    } else if (tipChoice == 'B' || tipChoice == 'b'){
-        cout << "Thank you for tipping 20%" << endl;
-        tip = 0.20*subtotal;        
-    } else if (tipChoice == 'C' || tipChoice == 'c'){
-        cout << "Thank you for tipping 25%" << endl;
-        tip = 0.25*subtotal; 
-    } else if (tipChoice == 'D' || tipChoice == 'd'){
-        cout << "How much would you like to tip?" << endl;
-        cin >> tipInput;
-        tip = tipInput;
-    } else {
-        cout << "That is not an option" << endl;
-    }
+    cout << "\n==========================================\n";
+    cout << "             END OF DAY REPORT\n";
+    cout << "==========================================\n";
 
-    double finalTotal = subtotal + totalTax + tip;
+    cout << "Total customers: " << totalCustomers << endl;
+    cout << "Grand total sales: $" << grandTotalSales << endl;
 
-    // --- 3. Formatted Receipt Output ---
-    cout << "\n==========================================" << endl;
-    cout << "          JAVA & BYTES COFFEE SHOP        " << endl;
-    cout << "==========================================" << endl;
-
-   
-    /*USE THIS CODE IN // TO ENABLE ITEM CODE DISPLAY*/
-    //cout << left << setw(25) << "Item Code:" << right << setw(15) << itemCode << endl;
-    cout << left << setw(25) << "Item Name:" << right << setw(15) << foodName << endl;
-    cout << left << setw(25) << "Quantity:" << right << setw(15) << itemQuantity << endl;
-    cout << left << setw(25) << "Unit Price:" << right << setw(14) << "$" << unitPrice << endl;
-    cout << left << setw(25) << "Member Status:" << right << setw(17) << (isMember ? "Yes" : "No") << endl;
-   
-    cout << "------------------------------------------" << endl;
-    cout << left << setw(25) << "Subtotal:" << right << setw(14) << "$" << subtotal << endl;
-    cout << left << setw(25) << "Tip:" << right << setw(14) << "$" << tip << endl;
-    cout << left << setw(25) << "Arkansas Tax (6.5%):" << right << setw(14) << "$" << taxAmountAR << endl;
-    cout << left << setw(25) << "Faulkner County Tax (0.5%):" << right << setw(12) << "$" << taxAmountFC << endl;
-    cout << left << setw(25) << "Conway Municipal Tax (2.125%):" << right << setw(9) << "$" << taxAmountCM << endl;
-    cout << left << setw(25) << "Total Tax:" << right << setw(14) << "$" << totalTax << endl;
-    cout << "------------------------------------------" << endl;
-    cout << left << setw(25) << "TOTAL:" << right << setw(14) << "$" << finalTotal << endl;
-    cout << "==========================================" << endl;
+    cout << "==========================================\n";
 
     return 0;
+}
 }
